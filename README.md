@@ -8,4 +8,4 @@ under experiment
 - [RelGAN](https://arxiv.org/abs/1908.07269)
 
 ## Acknowledgements
-This implementation is based on [njellinas's CycleGAN-VC2]https://github.com/njellinas/GAN-Voice-Conversion .
+This implementation is based on [njellinas's CycleGAN-VC2](https://github.com/njellinas/GAN-Voice-Conversion).
