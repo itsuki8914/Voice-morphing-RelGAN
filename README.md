@@ -1,5 +1,5 @@
 # Voice-morphing-RelGAN
-A implementation of Voice-morphing using RelGAN with TensorFlow.
+A implementation of Voice-morphing using RelGAN(image translation) with TensorFlow.
 
 This is under experiment now.
 
