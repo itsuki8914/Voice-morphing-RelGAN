@@ -7,7 +7,7 @@ from models.relgan import RelGAN
 from speech_tools import load_pickle, sample_train_data
 from speech_tools import *
 
-np.random.seed(168)
+np.random.seed(496)
 
 def main():
     dataset = 'datasets'
@@ -76,7 +76,7 @@ def main():
     while iteration <= num_iterations:
         generator_learning_rate *=0.99999
         discriminator_learning_rate *=0.99999
-        x, x_atr, y, y_atr, z, z_atr = sample_train_data(dataset_A=coded_sps_norms, nBatch=mini_batch_size, num_mcep=num_mcep, n_frames=n_frames)
+        x,x2, x_atr, y, y_atr, z, z_atr = sample_train_data(dataset_A=coded_sps_norms, nBatch=mini_batch_size, num_mcep=num_mcep, n_frames=n_frames)
         #print(np.max(x))
         #print(np.min(x))
         x_labels = np.zeros([mini_batch_size, num_domains])
@@ -91,7 +91,7 @@ def main():
         alp = np.random.uniform(0, 0.5, size=mini_batch_size) if rnd==0 else np.random.uniform(0.5, 1.0, size=mini_batch_size)
         #alp = np.random.uniform(0, 1, size=mini_batch_size)
         #print(alp)
-        generator_loss, discriminator_loss, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, dis_adv_loss, dis_cond_loss, dis_int_loss,intab,intal,lossf,lossb= model.train(input_A=x, input_B=y, input_C=z, label_A=x_labels, label_B=y_labels, label_C=z_labels,
+        generator_loss, discriminator_loss, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, dis_adv_loss, dis_cond_loss, dis_int_loss,intab,intal,lossf,lossb,lossm= model.train(input_A=x, input_A2=x2, input_B=y, input_C=z, label_A=x_labels, label_B=y_labels, label_C=z_labels,
                                                          alpha=alp, rand=rnd, lambda_cycle=lambda_cycle, lambda_identity=lambda_identity,
                                                          generator_learning_rate=generator_learning_rate,
                                                          discriminator_learning_rate=discriminator_learning_rate)
@@ -99,7 +99,7 @@ def main():
         if iteration % 10 == 0:
             print(rnd)
             print("intab=%.3e intal=%.3e"%(intab,intal))
-            print("losf=%.3e losb=%.3e"%(lossf,lossb))
+            print("losf=%.3e losb=%.3e, losm=%.3e"%(lossf,lossb,lossm))
             print("d_a=%.3e d_c=%.3e d_i=%.3e"%(dis_adv_loss,dis_cond_loss,dis_int_loss))
             print("g_a=%.3e g_c=%.3e g_i=%.3e g_r=%.3e g_s=%.3e"%(gen_adv_loss,gen_cond_loss,gen_int_loss,gen_rec_loss,gen_self_loss))
             print('Iteration: {:07d}, Generator Loss : {:.3f}, Discriminator Loss : {:.3f}'.format(iteration,
@@ -114,7 +114,7 @@ def main():
             for q in range(2):
                 eval_dirs = os.listdir('datasets_val')
                 assert len(eval_dirs) == num_domains
-                x, x_atr, y, y_atr, z, z_atr = sample_train_data(dataset_A=coded_sps_norms, nBatch=1, num_mcep=num_mcep, n_frames=n_frames)
+                x,x2, x_atr, y, y_atr, z, z_atr = sample_train_data(dataset_A=coded_sps_norms, nBatch=1, num_mcep=num_mcep, n_frames=n_frames)
                 x_labels = np.zeros([1, num_domains])
                 y_labels = np.zeros([1, num_domains])
                 for b in range(1):
@@ -181,7 +181,7 @@ def main():
         if iteration % 1000 ==0 or iteration==10:
             eval_dirs = os.listdir('datasets_val')
             assert len(eval_dirs) == num_domains
-            x, x_atr, y, y_atr, z, z_atr = sample_train_data(dataset_A=coded_sps_norms, nBatch=1, num_mcep=num_mcep, n_frames=n_frames)
+            x,x2, x_atr, y, y_atr, z, z_atr = sample_train_data(dataset_A=coded_sps_norms, nBatch=1, num_mcep=num_mcep, n_frames=n_frames)
             x_labels = np.zeros([1, num_domains])
             y_labels = np.zeros([1, num_domains])
             for b in range(1):
@@ -245,7 +245,7 @@ def main():
         if iteration % 1000 ==0 or iteration==10:
             eval_dirs = os.listdir('datasets_val')
             assert len(eval_dirs) == num_domains
-            x, x_atr, y, y_atr, z, z_atr = sample_train_data(dataset_A=coded_sps_norms, nBatch=1, num_mcep=num_mcep, n_frames=n_frames)
+            x, x2, x_atr, y, y_atr, z, z_atr = sample_train_data(dataset_A=coded_sps_norms, nBatch=1, num_mcep=num_mcep, n_frames=n_frames)
             x_labels = np.zeros([1, num_domains])
             y_labels = np.zeros([1, num_domains])
             for b in range(1):
@@ -269,7 +269,7 @@ def main():
                 coded_sp_transposed = coded_sp.T
                 coded_sp_norm = (coded_sp_transposed - coded_sps_means[x_atr]) / coded_sps_stds[x_atr]
                 coded_sp_norm = np.tanh(coded_sp_norm)
-                coded_sp_converted_norm = model.test(inputs=np.array([coded_sp_norm]), label_A=x_labels, label_B=y_labels, alpha=alpha)[0]
+                coded_sp_converted_norm = model.test(inputs=np.array([coded_sp_norm]), label_A=x_labels, label_B=x_labels, alpha=alpha)[0]
                 coded_sp_converted_norm = np.arctanh(coded_sp_converted_norm)
                 if coded_sp_converted_norm.shape[1] > len(f0):
                     coded_sp_converted_norm = coded_sp_converted_norm[:, :-1]

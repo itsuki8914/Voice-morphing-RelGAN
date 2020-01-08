@@ -38,6 +38,7 @@ class RelGAN(object):
 
         # Placeholders for real training samples
         self.input_A_real = tf.placeholder(tf.float32, shape=self.input_shape, name='input_A_real')
+        self.input_A2_real = tf.placeholder(tf.float32, shape=self.input_shape, name='input_A_real')
         self.input_B_real = tf.placeholder(tf.float32, shape=self.input_shape, name='input_B_real')
         self.input_C_real = tf.placeholder(tf.float32, shape=self.input_shape, name='input_B_real')
         # Placeholders for label of real training samples
@@ -65,10 +66,15 @@ class RelGAN(object):
         self.lambda_interp = 10
         self.lambda_forward = 10
         self.lambda_backward = 10
+        self.lambda_mode_seeking = 1
 
         self.generation_B = self.generator(inputs=self.input_A_real, vec=self.vector_A2B, num_domains=self.num_domains,
                                             dim=self.num_features, batch_size=self.batch_size,
                                            reuse=False, scope_name='generator_A2B')
+
+        self.generation_B2 = self.generator(inputs=self.input_A2_real, vec=self.vector_A2B, num_domains=self.num_domains,
+                                            dim=self.num_features, batch_size=self.batch_size,
+                                           reuse=True, scope_name='generator_A2B')
 
         self.cycle_A = self.generator(inputs=self.generation_B, vec=-self.vector_A2B, num_domains=self.num_domains,
                                         dim=self.num_features, batch_size=self.batch_size,
@@ -122,6 +128,9 @@ class RelGAN(object):
 
         # Backward loss
         self.backward_loss = l1_loss(y=self.input_A_real, y_hat=self.generation_alp_backward)
+
+        # Mode seeking Loss
+        self.mode_seeking_loss = tf.divide(l1_loss(y=self.input_A_real, y_hat=self.input_A2_real), l1_loss(y=self.generation_B, y_hat=self.generation_B2)+1e-12)
 
         # Place holder for lambda_cycle and lambda_identity
         self.lambda_cycle = tf.placeholder(tf.float32, None, name='lambda_cycle')
@@ -232,7 +241,7 @@ class RelGAN(object):
 
         # Merge the generator losses
 
-        self.generator_loss = self.generator_loss_A2B + self.lambda_backward * self.backward_loss +\
+        self.generator_loss = self.generator_loss_A2B + self.lambda_backward * self.backward_loss + self.mode_seeking_loss + \
                               self.lambda_cycle * self.cycle_loss + self.lambda_identity * self.identity_loss + \
                               self.lambda_conditional * self.generator_loss_conditional_sf + self.lambda_interp * self.generator_loss_interp_alp
 
@@ -265,15 +274,15 @@ class RelGAN(object):
                                                           beta1=0.5).minimize(self.generator_loss,
                                                                               var_list=self.generator_vars)
 
-    def train(self, input_A, input_B, input_C, label_A, label_B, label_C, alpha, rand, lambda_cycle, lambda_identity, generator_learning_rate,
+    def train(self, input_A, input_A2, input_B, input_C, label_A, label_B, label_C, alpha, rand, lambda_cycle, lambda_identity, generator_learning_rate,
               discriminator_learning_rate):
 
-        generation_B, cycle_A, generator_loss, _, generator_summaries, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss,forlos,backlos = self.sess.run(
+        generation_B, cycle_A, generator_loss, _, generator_summaries, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss,forlos,backlos,modelos = self.sess.run(
             [self.generation_B, self.cycle_A, self.generator_loss,
              self.generator_optimizer, self.generator_summaries, self.generator_loss_A2B, self.generator_loss_conditional_sf,
-             self.generator_loss_interp_alp,self.cycle_loss, self.identity_loss, self.forward_loss, self.backward_loss],
+             self.generator_loss_interp_alp,self.cycle_loss, self.identity_loss, self.forward_loss, self.backward_loss, self.mode_seeking_loss],
             feed_dict={self.lambda_cycle: lambda_cycle, self.lambda_identity: lambda_identity,
-                        self.input_A_real: input_A, self.input_A_label: label_A, self.input_B_label: label_B,
+                        self.input_A_real: input_A, self.input_A2_real:input_A2, self.input_A_label: label_A, self.input_B_label: label_B,
                         self.rnd: rand, self.alpha: alpha, self.generator_learning_rate: generator_learning_rate})
 
         self.writer.add_summary(generator_summaries, self.train_step)
@@ -290,7 +299,7 @@ class RelGAN(object):
 
         self.train_step += 1
 
-        return generator_loss, discriminator_loss, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, dis_adv_loss, dis_cond_loss, dis_int_loss ,intab,intal, forlos, backlos
+        return generator_loss, discriminator_loss, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, dis_adv_loss, dis_cond_loss, dis_int_loss ,intab,intal, forlos, backlos, modelos
 
     def test(self, inputs, label_A, label_B, alpha):
 

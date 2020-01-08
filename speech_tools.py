@@ -215,9 +215,11 @@ def load_pickle(path):
 
 def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
     x = np.zeros((nBatch, num_mcep, n_frames), dtype=np.float32)
+    x2 = np.zeros((nBatch, num_mcep, n_frames), dtype=np.float32)
     y = np.zeros((nBatch, num_mcep, n_frames), dtype=np.float32)
     z = np.zeros((nBatch, num_mcep, n_frames), dtype=np.float32)
     x_atr = []
+    #x2_atr = []
     y_atr = []
     z_atr = []
     for i in range(nBatch):
@@ -232,6 +234,17 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
         end_x = start_x + n_frames
         x[i,:,:] = data_x[:,start_x:end_x]
         x_atr.append(atr)
+
+        x2_idx = np.random.choice(len(dataset_A[atr]))
+        data_x2 = dataset_A[atr][x2_idx]
+        frames_x2_total = data_x2.shape[1]
+        assert frames_x2_total >= n_frames
+        #print(frames_x_total)
+        start_x2 = np.random.randint(frames_x2_total - n_frames + 1)
+        end_x2 = start_x2 + n_frames
+        x2[i,:,:] = data_x2[:,start_x2:end_x2]
+        #x_atr.append(atr)
+
         labels = labels[labels!=atr]
 
         atr = np.random.choice(labels)
@@ -259,7 +272,7 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
     y = np.tanh(y)
     z = np.tanh(z)
 
-    return x, x_atr, y, y_atr, z, z_atr
+    return x, x2, x_atr, y, y_atr, z, z_atr
 
 """
 def sample_train_data(dataset_A, dataset_B, n_frames=128):
