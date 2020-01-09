@@ -269,6 +269,7 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
         z_atr.append(atr)
 
     x = np.tanh(x)
+    x2 = np.tanh(x2)
     y = np.tanh(y)
     z = np.tanh(z)
 
