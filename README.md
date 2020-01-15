@@ -19,7 +19,7 @@ This is under experiment now.
 Put the folder containing the wav file in Datasets.
 like this
 '''
-...
+'''
 
 datasets
 ├── train_lr
