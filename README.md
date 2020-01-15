@@ -16,50 +16,97 @@ This is under experiment now.
 - [RelGAN](https://github.com/willylulu/RelGAN)
 
 # Usage
-Put the folder containing the wav file in Datasets.
-like this
+1. Put the folder containing the wav files for training in named datasets.
+
+ And Put the folder containing a few wav files for validation in datasets_val.
+ 
+ like this
 
 ```
 ...
 │
-├── train_lr
-│     ├── 0001x4.png
-│     ├── 0002x4.png
-│     ├── ...
-│     └── 0800x4.png
-├── train_hr
-│     ├── 0001.png
-│     ├── 0002.png
-│     ├── ...
-│     └── 0800.png 
-├── val_lr
-│     ├── 0801x4.png
-│     ├── 0802x4.png
-│     ├── ...
-│     └── 0900x4.png
-├── val_hr
-│     ├── 0801.png
-│     ├── 0802.png
-│     ├── ...
-│     └── 0900.png 
-├── main.py
-├── model.py
+datasets
+|   │
+|   ├── speaker_1
+|   │     ├── wav1_1.wav
+|   │     ├── wav1_2.wav
+|   │     ├── ...
+|   │     └── wav1_i.wav
+|   ├── speaker_2
+|   │     ├── wav2_1.wav
+|   │     ├── wav2_2.wav
+|   │     ├── ...
+|   │     └── wav2_j.wav 
+|   ...
+|   └── speaker_N
+|         ├── wavN_1.wav
+|         ├── wavN_2.wav
+|         ├── ...
+|         └── wavN_k.wav    
+datasets_val
+|   │
+|   ├── speaker_1
+|   │     ├── wav1_i+1.wav
+|   │     ├── wav1_i+2.wav
+|   │     ├── ...
+|   │     └── wav1_i+5.wav
+|   ├── speaker_2
+|   │     ├── wav2_j+1.wav
+|   │     ├── wav2_j+2.wav
+|   │     ├── ...
+|   │     └── wav2_j+3.wav 
+|   ...
+|   └── speaker_N
+|         ├── wavN_k+1.wav
+|         ├── wavN_k+2.wav
+|         ├── ...
+|         └── wavN_k+4.wav 
+...
+├── preprocess1.py     
+├── preprocess2.py
 ...
 ```
 
-
- Run preprocess1.py to remove silence　and split the file.
+2. Run preprocess1.py to remove silence　and split the file.
   
 ```
 python preprocess1.py
 ```
 
-
- Run preprocess2.py to extract features and output pickles.
+3. Run preprocess2.py to extract features and output pickles.
   
 ```
-python preprocess1.py
+python preprocess2.py
 ```
+
+4. Train RelGAN-VM.
+
+```
+python train_relgan_vm.py
+```
+
+5. After training, inference can be performed.
+
+   Source attribute and target attribute must be designated.
+   
+   In below example, the wav files located datasets_val/speaker_2 are converted 60% to 4th attribute(maybe speaker_4).
+   
+   pay attention to 0-origin index.
+
+```
+python eval_relgan_vm.py --source_label 1 --source_label 3 --interpolation 0.6
+```
+
+## Result examples
+The examples trained using [JVS (Japanese versatile speech) corpus](https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_corpus) are located in result_examples.
+
+The following four voices were used for training.
+
+* jvs010(female, high-pitched fo)
+* jvs016(female, low-pitched fo)
+* jvs042(male, low-pitched fo)
+* jvs054(male, high-pitched fo)
 
 ## Acknowledgements
 This implementation is based on [njellinas's CycleGAN-VC2](https://github.com/njellinas/GAN-Voice-Conversion).
+And this was created with the advice of [Lgeu](https://github.com/Lgeu).
