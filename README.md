@@ -19,7 +19,7 @@ This is under experiment now.
 Put the folder containing the wav file in Datasets.
 like this
 '''
-'''
+
 
 datasets
 ├── train_lr
@@ -44,7 +44,7 @@ datasets
       └── 0900.png 
 
 '''
-'''
+
 
  Run preprocess1.py to remove silence　and split the file.
   
