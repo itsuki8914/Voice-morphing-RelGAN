@@ -15,5 +15,48 @@ This is under experiment now.
 ## Original implementations
 - [RelGAN](https://github.com/willylulu/RelGAN)
 
+# Usage
+Put the folder containing the wav file in Datasets.
+like this
+'''
+...
+
+datasets
+├── train_lr
+│     ├── 0001x4.png
+│     ├── 0002x4.png
+│     ├── ...
+│     └── 0800x4.png
+├── train_hr
+│     ├── 0001.png
+│     ├── 0002.png
+│     ├── ...
+│     └── 0800.png 
+├── val_lr
+│     ├── 0801x4.png
+│     ├── 0802x4.png
+│     ├── ...
+│     └── 0900x4.png
+└── val_hr
+      ├── 0801.png
+      ├── 0802.png
+      ├── ...
+      └── 0900.png 
+
+'''
+
+ Run preprocess1.py to remove silence　and split the file.
+  
+```
+python preprocess1.py
+```
+
+
+ Run preprocess2.py to extract features and output pickles.
+  
+```
+python preprocess1.py
+```
+
 ## Acknowledgements
 This implementation is based on [njellinas's CycleGAN-VC2](https://github.com/njellinas/GAN-Voice-Conversion).
