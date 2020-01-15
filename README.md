@@ -109,4 +109,5 @@ The following four voices were used for training.
 
 ## Acknowledgements
 This implementation is based on [njellinas's CycleGAN-VC2](https://github.com/njellinas/GAN-Voice-Conversion).
+
 And this was created with the advice of [Lgeu](https://github.com/Lgeu).
