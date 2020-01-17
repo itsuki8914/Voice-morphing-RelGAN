@@ -263,8 +263,8 @@ def Generator212(inputs, vec, num_domains, dim=24, batch_size=1, reuse=False, sc
                                 name='conv_out')
         out = tf.squeeze(conv_out, axis=[-1], name='out_squeeze')
 
-        out = tf.tanh(out)
-        out = tf.clip_by_value(out, -1+1e-12, 1-1e-12)
+        #out = tf.tanh(out)
+        #out = tf.clip_by_value(out, -1+1e-12, 1-1e-12)
 
 
     return out

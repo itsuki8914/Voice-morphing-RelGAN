@@ -27,11 +27,8 @@ def process(folder):
 
         for s in range(wav_splitted.shape[0]):
             x = wav[wav_splitted[s][0]:wav_splitted[s][1]]
-            #x *= 1. / max(0.01, np.max(np.abs(x)))
-            #ibrosa.output.write_wav(os.path.join(output_root_dir,export_dir,"{}_".format(s)+os.path.basename(file)), x,sampling_rate)
             X = np.concatenate([X,x],axis=0)
     X *= 1. / max(0.01, np.max(np.abs(X)))
-    #X = X.astype(np.float32)
     wavlen = X.shape[0]
     crop_size = wavlen // divs
     start = 0

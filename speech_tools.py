@@ -21,11 +21,11 @@ def world_decompose(wav, fs, frame_period=5.0):
     wav = wav.astype(np.float64)
     f0, timeaxis = pyworld.harvest(wav, fs, frame_period=frame_period, f0_floor=71.0, f0_ceil=800.0)
     #print("f0 ",f0)
-    sp = pyworld.cheaptrick(wav, f0, timeaxis, fs)
-    ap = pyworld.d4c(wav, f0, timeaxis, fs)
+    spectrogram = pyworld.cheaptrick(wav, f0, timeaxis, fs)
+    aperiodicity = pyworld.d4c(wav, f0, timeaxis, fs)
     #print("ap ",ap)
 
-    return f0, timeaxis, sp, ap
+    return f0, timeaxis, spectrogram, aperiodicity
 
 
 def world_encode_spectral_envelop(sp, fs, dim=24):
@@ -86,10 +86,8 @@ def world_decode_data(coded_sps, fs):
 def world_speech_synthesis(f0, decoded_sp, ap, fs, frame_period):
     # decoded_sp = decoded_sp.astype(np.float64)
     wav = pyworld.synthesize(f0, decoded_sp, ap, fs, frame_period)
-    #print("synthed")
     # Librosa could not save wav if not doing so
     wav = wav.astype(np.float32)
-    #print("np")
 
     return wav
 
@@ -229,20 +227,22 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
         data_x = dataset_A[atr][x_idx]
         frames_x_total = data_x.shape[1]
         assert frames_x_total >= n_frames
-        #print(frames_x_total)
         start_x = np.random.randint(frames_x_total - n_frames + 1)
         end_x = start_x + n_frames
         x[i,:,:] = data_x[:,start_x:end_x]
+        if np.random.random() >0.9999:
+            x[i] *= 0
         x_atr.append(atr)
 
         x2_idx = np.random.choice(len(dataset_A[atr]))
         data_x2 = dataset_A[atr][x2_idx]
         frames_x2_total = data_x2.shape[1]
         assert frames_x2_total >= n_frames
-        #print(frames_x_total)
         start_x2 = np.random.randint(frames_x2_total - n_frames + 1)
         end_x2 = start_x2 + n_frames
         x2[i,:,:] = data_x2[:,start_x2:end_x2]
+        if np.random.random() >0.9995:
+            x2[i] *= 0
         #x_atr.append(atr)
 
         labels = labels[labels!=atr]
@@ -255,6 +255,8 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
         start_y = np.random.randint(frames_y_total - n_frames + 1)
         end_y = start_y + n_frames
         y[i,:,:] = data_y[:,start_y:end_y]
+        if np.random.random() >0.9995:
+            y[i] *= 0
         y_atr.append(atr)
         labels = labels[labels!=atr]
 
@@ -266,12 +268,14 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
         start_z = np.random.randint(frames_z_total - n_frames + 1)
         end_z = start_z + n_frames
         z[i,:,:] = data_z[:,start_z:end_z]
+        if np.random.random() >0.9995:
+            z[i] *= 0
         z_atr.append(atr)
 
-    x = np.tanh(x)
-    x2 = np.tanh(x2)
-    y = np.tanh(y)
-    z = np.tanh(z)
+    #x = np.tanh(x)
+    #x2 = np.tanh(x2)
+    #y = np.tanh(y)
+    #z = np.tanh(z)
 
     return x, x2, x_atr, y, y_atr, z, z_atr
 

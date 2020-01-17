@@ -8,12 +8,8 @@ from multiprocessing import Pool
 datasets_dir = "datasets_splitted/datasets"
 
 def process(folder):
-    #dataset = 'vcc2018'
     dataset = folder
-    src_speaker = 'VCC2SF3'
-    trg_speaker = 'VCC2TM1'
 
-    #data_dir = os.path.join('datasets',dataset)
     data_dir = datasets_dir
     exp_dir = os.path.join('pickles', dataset)
 
@@ -21,9 +17,7 @@ def process(folder):
 
     exp_A_dir = exp_dir
 
-
     os.makedirs(exp_A_dir, exist_ok=True)
-
 
     sampling_rate = 22050
     num_mcep = 36
@@ -41,7 +35,6 @@ def process(folder):
     f0s_A, timeaxes_A, sps_A, aps_A, coded_sps_A = world_encode_data(wavs=wavs_A, fs=sampling_rate,
                                                                      frame_period=frame_period, coded_dim=num_mcep)
 
-
     print('Calculating F0 statistics...')
 
     log_f0s_mean_A, log_f0s_std_A = logf0_statistics(f0s_A)
@@ -49,11 +42,9 @@ def process(folder):
     print('Log Pitch A')
     print('Mean: %f, Std: %f' % (log_f0s_mean_A, log_f0s_std_A))
 
-
     print('Normalizing data...')
 
     coded_sps_A_transposed = transpose_in_list(lst=coded_sps_A)
-
 
     coded_sps_A_norm, coded_sps_A_mean, coded_sps_A_std = coded_sps_normalization_fit_transoform(
         coded_sps=coded_sps_A_transposed)
