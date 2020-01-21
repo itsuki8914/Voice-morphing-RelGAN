@@ -67,7 +67,7 @@ datasets_val
 ...
 ```
 
-2. Run preprocess1.py to remove silence　and split the file.
+2. Run preprocess1.py to remove silence and split the file.
   
 ```
 python preprocess1.py
