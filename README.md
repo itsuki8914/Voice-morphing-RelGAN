@@ -104,8 +104,8 @@ The following four voices were used for training.
 
 * jvs010(female, high-pitched fo, domain 0)
 * jvs016(female, low-pitched fo, domain 1)
-* jvs042(male, low-pitched fo, domain2)
-* jvs054(male, high-pitched fo, domain3)
+* jvs042(male, low-pitched fo, domain 2)
+* jvs054(male, high-pitched fo, domain 3)
 
 ## Acknowledgements
 This implementation is based on [njellinas's CycleGAN-VC2](https://github.com/njellinas/GAN-Voice-Conversion).
