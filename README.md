@@ -91,7 +91,7 @@ python train_relgan_vm.py
 
    Source attribute and target attribute must be designated.
    
-   In below example, the wav files located datasets_val/speaker_2 are converted 60% to 4th attribute(maybe speaker_4).
+   In below example, The 2nd attribute wav file, datasets_val/speaker_2, will be 60% converted to the 4th attribute (probably speaker_4).
    
    pay attention to 0-origin index.
 
