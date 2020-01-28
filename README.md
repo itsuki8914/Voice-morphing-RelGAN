@@ -5,6 +5,8 @@ This enables Many to many voice conversion and voice morphing.
 
 This is under experiment now.
 
+[Explanation Page](https://qiita.com/DRI_8191/items/3dad1f08a11486a12db2)(japanese language)
+
 ## Original papers and pages
 - [CycleGAN-VC2](http://www.kecl.ntt.co.jp/people/kaneko.takuhiro/projects/cyclegan-vc2/index.html)
 - [RelGAN](https://arxiv.org/abs/1908.07269)
