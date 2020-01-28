@@ -60,11 +60,7 @@ def main():
         coded_sps_stds.append(coded_sps_A_std)
         log_f0s_means.append(log_f0s_mean_A)
         log_f0s_stds.append(log_f0s_std_A)
-        #print(len(coded_sps_A_norm))
 
-    #print(coded_sps_stds)
-    #print(len(coded_sps_norms))
-    #print(coded_sps_norms[0][1].shape)
 
     num_domains = len(coded_sps_norms)
     model = RelGAN(num_features=num_mcep, num_domains=num_domains, batch_size=mini_batch_size, log_dir=log_dir)
@@ -87,8 +83,7 @@ def main():
         generator_learning_rate *=0.99999
         discriminator_learning_rate *=0.99999
         x, x2, x_atr, y, y_atr, z, z_atr = sample_train_data(dataset_A=coded_sps_norms, nBatch=mini_batch_size, num_mcep=num_mcep, n_frames=n_frames)
-        #print(np.max(x))
-        #print(np.min(x))
+
         x_labels = np.zeros([mini_batch_size, num_domains])
         y_labels = np.zeros([mini_batch_size, num_domains])
         z_labels = np.zeros([mini_batch_size, num_domains])
@@ -99,8 +94,7 @@ def main():
 
         rnd = np.random.randint(2)
         alp = np.random.uniform(0, 0.5, size=mini_batch_size) if rnd==0 else np.random.uniform(0.5, 1.0, size=mini_batch_size)
-        #alp = np.random.uniform(0, 1, size=mini_batch_size)
-        #print(alp)
+
         generator_loss, discriminator_loss, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, dis_adv_loss, dis_cond_loss, dis_int_loss, lossb, lossm, losst = model.train(input_A=x,
                 input_A2=x2, input_B=y, input_C=z, label_A=x_labels, label_B=y_labels, label_C=z_labels,
                  alpha=alp, rand=rnd, lambda_cycle=lambda_cycle, lambda_identity=lambda_identity, lambda_triangle=lambda_triangle, lambda_backward=lambda_backward,
