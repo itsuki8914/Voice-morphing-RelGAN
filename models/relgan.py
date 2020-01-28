@@ -91,10 +91,10 @@ class RelGAN(object):
                                            reuse=True,
                                            scope_name='generator_A2B')
 
-        self.generation_alp_forward = self.generator(inputs=self.generation_alp, vec=self.vector_A2B*(1-self.alpha_1),
-                                        num_domains=self.num_domains, dim=self.num_features, batch_size=self.batch_size,
-                                           reuse=True,
-                                           scope_name='generator_A2B')
+        #self.generation_alp_forward = self.generator(inputs=self.generation_alp, vec=self.vector_A2B*(1-self.alpha_1),
+        #                                num_domains=self.num_domains, dim=self.num_features, batch_size=self.batch_size,
+        #                                   reuse=True,
+        #                                   scope_name='generator_A2B')
 
         self.generation_alp_backward = self.generator(inputs=self.generation_alp, vec=-self.vector_A2B*self.alpha_1,
                                         num_domains=self.num_domains, dim=self.num_features, batch_size=self.batch_size,
@@ -133,7 +133,7 @@ class RelGAN(object):
         self.identity_loss = l1_loss(y=self.input_A_real, y_hat=self.generation_A_identity)
 
         # Forward loss
-        self.forward_loss = l1_loss(y=self.generation_B, y_hat=self.generation_alp_forward)
+        #self.forward_loss = l1_loss(y=self.generation_B, y_hat=self.generation_alp_forward)
 
         # Backward loss
         self.backward_loss = l1_loss(y=self.input_A_real, y_hat=self.generation_alp_backward)
@@ -188,12 +188,12 @@ class RelGAN(object):
         #self.discriminator_loss_B = (self.discriminator_loss_input_B_real + self.discriminator_loss_input_B_fake + self.discriminator_loss_alp) / 3
 
         # Two-step discriminator loss
-        self.two_step_discriminator_loss_input_A_real = l2_loss(y=tf.ones_like(self.discrimination_input_A_dot_real),
-                                                                y_hat=self.discrimination_input_A_dot_real)
-        self.two_step_discriminator_loss_input_A_fake = l2_loss(y=tf.zeros_like(self.discrimination_input_A_dot_fake),
-                                                                y_hat=self.discrimination_input_A_dot_fake)
-        self.two_step_discriminator_loss_A = (self.two_step_discriminator_loss_input_A_real +
-                                              self.two_step_discriminator_loss_input_A_fake) / 2
+        #self.two_step_discriminator_loss_input_A_real = l2_loss(y=tf.ones_like(self.discrimination_input_A_dot_real),
+        #                                                        y_hat=self.discrimination_input_A_dot_real)
+        #self.two_step_discriminator_loss_input_A_fake = l2_loss(y=tf.zeros_like(self.discrimination_input_A_dot_fake),
+        #                                                        y_hat=self.discrimination_input_A_dot_fake)
+        #self.two_step_discriminator_loss_A = (self.two_step_discriminator_loss_input_A_real +
+        #                                      self.two_step_discriminator_loss_input_A_fake) / 2
 
         # Conditional adversarial Loss
 
@@ -291,19 +291,19 @@ class RelGAN(object):
     def train(self, input_A, input_A2, input_B, input_C, label_A, label_B, label_C, alpha, rand, lambda_cycle, lambda_identity, lambda_backward, lambda_triangle,
                 generator_learning_rate, discriminator_learning_rate):
 
-        generation_B, cycle_A, generator_loss, _, generator_summaries, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss,forlos,backlos,modelos,trilos = self.sess.run(
+        generation_B, cycle_A, generator_loss, _, generator_summaries, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, backloss, modeloss, triloss = self.sess.run(
             [self.generation_B, self.cycle_A, self.generator_loss,
              self.generator_optimizer, self.generator_summaries, self.generator_loss_A2B, self.generator_loss_conditional_sf,
-             self.generator_loss_interp_alp,self.cycle_loss, self.identity_loss, self.forward_loss, self.backward_loss, self.mode_seeking_loss,self.triangle_loss],
+             self.generator_loss_interp_alp,self.cycle_loss, self.identity_loss, self.backward_loss, self.mode_seeking_loss,self.triangle_loss],
             feed_dict={self.lambda_cycle: lambda_cycle, self.lambda_identity: lambda_identity, self.lambda_backward:lambda_backward, self.lambda_triangle:lambda_triangle,
                         self.input_A_real: input_A, self.input_A2_real:input_A2, self.input_A_label: label_A, self.input_B_label: label_B, self.input_C_label:label_C,
                         self.rnd: rand, self.alpha: alpha, self.generator_learning_rate: generator_learning_rate})
 
         self.writer.add_summary(generator_summaries, self.train_step)
 
-        discriminator_loss, _, discriminator_summaries , dis_adv_loss, dis_cond_loss, dis_int_loss, intab, intal = self.sess.run(
+        discriminator_loss, _, discriminator_summaries , dis_adv_loss, dis_cond_loss, dis_int_loss, = self.sess.run(
             [self.discriminator_loss, self.discriminator_optimizer, self.discriminator_summaries, self.discriminator_loss_B,
-            self.discriminator_loss_conditional, self.discriminator_loss_interp, self.discriminator_loss_interp_AB, self.discriminator_loss_interp_alp],
+            self.discriminator_loss_conditional, self.discriminator_loss_interp],
             feed_dict={self.input_A_real: input_A, self.input_B_real: input_B, self.input_C_real: input_C,
                         self.input_A_label: label_A, self.input_B_label: label_B, self.input_C_label: label_C,
                         self.rnd: rand, self.alpha: alpha, self.discriminator_learning_rate: discriminator_learning_rate,
@@ -313,7 +313,7 @@ class RelGAN(object):
 
         self.train_step += 1
 
-        return generator_loss, discriminator_loss, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, dis_adv_loss, dis_cond_loss, dis_int_loss ,intab,intal, forlos, backlos, modelos,trilos
+        return generator_loss, discriminator_loss, gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, dis_adv_loss, dis_cond_loss, dis_int_loss, backloss, modeloss, triloss
 
     def test(self, inputs, label_A, label_B, alpha):
 

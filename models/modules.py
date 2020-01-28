@@ -312,8 +312,8 @@ def PatchGanDiscriminator(inputs_A, inputs_B, vec, num_domains, reuse=[False, Fa
             else:
                 assert scope.reuse is False
 
-            fm = minibatch_stddev_layer(f)
-            adv = conv2d_layer(inputs=fm, filters=1, kernel_size=[1, 3], strides=[1, 1], activation=None,
+            #f = minibatch_stddev_layer(f)
+            adv = conv2d_layer(inputs=f, filters=1, kernel_size=[1, 3], strides=[1, 1], activation=None,
                                name='out_conv_adv')
             return adv
 

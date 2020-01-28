@@ -217,7 +217,6 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
     y = np.zeros((nBatch, num_mcep, n_frames), dtype=np.float32)
     z = np.zeros((nBatch, num_mcep, n_frames), dtype=np.float32)
     x_atr = []
-    #x2_atr = []
     y_atr = []
     z_atr = []
     for i in range(nBatch):
@@ -230,7 +229,7 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
         start_x = np.random.randint(frames_x_total - n_frames + 1)
         end_x = start_x + n_frames
         x[i,:,:] = data_x[:,start_x:end_x]
-        if np.random.random() >0.9999:
+        if np.random.random() >0.9995:
             x[i] *= 0
         x_atr.append(atr)
 
@@ -243,7 +242,6 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
         x2[i,:,:] = data_x2[:,start_x2:end_x2]
         if np.random.random() >0.9995:
             x2[i] *= 0
-        #x_atr.append(atr)
 
         labels = labels[labels!=atr]
 
@@ -272,10 +270,4 @@ def sample_train_data(dataset_A, nBatch, num_mcep=36, n_frames=128):
             z[i] *= 0
         z_atr.append(atr)
 
-    #x = np.tanh(x)
-    #x2 = np.tanh(x2)
-    #y = np.tanh(y)
-    #z = np.tanh(z)
-
     return x, x2, x_atr, y, y_atr, z, z_atr
-
