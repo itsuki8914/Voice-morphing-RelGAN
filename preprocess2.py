@@ -49,8 +49,7 @@ def process(folder):
     coded_sps_A_norm, coded_sps_A_mean, coded_sps_A_std = coded_sps_normalization_fit_transoform(
         coded_sps=coded_sps_A_transposed)
 
-    print(np.max(coded_sps_A_norm[0]))
-    print(np.min(coded_sps_A_norm[0]))
+
     print('Saving data...')
     save_pickle(os.path.join(exp_A_dir, 'cache{}.p'.format(num_mcep)),
                 (coded_sps_A_norm, coded_sps_A_mean, coded_sps_A_std, log_f0s_mean_A, log_f0s_std_A))
