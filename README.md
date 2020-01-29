@@ -100,7 +100,7 @@ python train_relgan_vm.py
    pay attention to 0-origin index.
 
 ```
-python eval_relgan_vm.py --source_label 1 --source_label 3 --interpolation 0.6
+python eval_relgan_vm.py --source_label 1 --target_label 3 --interpolation 0.6
 ```
 
 ## Result examples
