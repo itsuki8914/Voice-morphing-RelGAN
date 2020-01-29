@@ -1,5 +1,5 @@
-# Voice-morphing-RelGAN
-A implementation of Voice-morphing using RelGAN(image translation) with TensorFlow.
+# Voice-conversion-and-morphing-RelGAN
+A implementation of Voice-conversion-and-morphing using RelGAN(image translation) with TensorFlow.
 
 This enables Many to many voice conversion and voice morphing.
 
