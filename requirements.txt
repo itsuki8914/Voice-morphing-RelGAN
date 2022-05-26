@@ -1,5 +1,5 @@
 numpy==1.16.0
-tensorflow-gpu==1.15.2
+tensorflow-gpu==2.7.2
 progressbar2==3.37.1
 librosa==0.6.0
 ffmpeg==1.4
